@@ -1,4 +1,7 @@
-require("dotenv").config();
+require('dotenv').config();
+console.log("Mongo URI:", process.env.MONGO_URI); // Debugging
+console.log("Session Secret:", process.env.SESSION_SECRET);
+console.log("Client URL:", process.env.CLIENT_URL);
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -6,29 +9,48 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const session = require("express-session");
 const path = require('path');
-require("./config/passport"); 
+
+require("./config/passport"); // Import Passport config
+
 const MongoStore = require('connect-mongo');
 
 const authRoutes = require("./routes/auth");  
 const protectedRoutes = require("./routes/protected");
 const onboardingRoutes = require("./routes/onboarding");
 const vehicleRoutes = require("./routes/vehicle");
- const userRoutes = require("./routes/user"); 
+
+const userRoutes = require("./routes/userRoutes"); // 
 const assistanceRoutes = require("./routes/assistanceRoutes");
+
+
 const app = express();
 
 // ✅ CORS: Allow frontend to communicate with backend
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+
 app.use(cors({ 
   origin: CLIENT_URL, 
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// ✅ Additional headers for auth
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', CLIENT_URL);
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization');
+  next();
+});
+
+// ✅ Handle preflight requests
+app.options('*', cors());
 
 // ✅ Middleware
 app.use(express.json());
 app.use(cookieParser());
+
 const store = MongoStore.create({
   mongoUrl: process.env.MONGO_URI,
   collectionName: 'sessions',
@@ -37,9 +59,11 @@ const store = MongoStore.create({
     secret: process.env.SESSION_SECRET
   }
 });
+
 store.on('error', function(error) {
   console.error('❌ Session Store Error:', error);
 });
+
 const sessionOptions = {
   store,
   secret: process.env.SESSION_SECRET,
@@ -58,6 +82,7 @@ const sessionOptions = {
 };
 
 app.use(session(sessionOptions));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -65,10 +90,10 @@ app.use(passport.session());
 app.use("/auth", authRoutes);
 app.use("/protected", protectedRoutes);
 app.use("/onboarding", onboardingRoutes);
-app.use("/api", userRoutes); 
+app.use("/api", userRoutes); // ✅ Fixed
 app.use("/api/vehicles", vehicleRoutes);
-
 app.use("/api/assistance", assistanceRoutes);
+
 
 app.post("/api/location", async (req, res) => {
   try {
@@ -82,7 +107,6 @@ app.post("/api/location", async (req, res) => {
 
 // ✅ Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
-  
   serverSelectionTimeoutMS: 15000,
   socketTimeoutMS: 45000,
 })
