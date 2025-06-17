@@ -71,10 +71,10 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true, // Enable for HTTPS
+    secure: false, // Set to false for HTTP development
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'none' // Required for cross-site requests
+    sameSite: 'lax' // Changed from 'none' for HTTP development
   },
   name: 'sessionId',
   rolling: true,

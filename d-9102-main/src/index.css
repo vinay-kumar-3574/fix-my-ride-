@@ -50,106 +50,23 @@
   ::selection {
     @apply bg-mint text-forest;
   }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-  }
+}
+/* Dark Mode Support */
+.dark-mode {
+  background-color: #0A1F2F !important;
+  color: white !important;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground transition-colors duration-300;
-  }
+/* Apply Light Mode */
+.light-mode {
+  background-color: white !important;
+  color: black !important;
+}
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Custom Animations */
-@layer utilities {
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-  
-  .hover-scale {
-    @apply transition-transform duration-300 hover:scale-105;
-  }
-  
-  .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
-  }
-  
-  .glass-effect {
-    @apply bg-white/10 backdrop-blur-lg border border-white/20;
-  }
-  
-  .dark .glass-effect {
-    @apply bg-black/20 border-white/10;
-  }
-}
 
-/* Enhanced Hover Effects */
-.hover-card {
-  @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
-}
-
-.hover-button {
-  @apply transition-all duration-300 hover:shadow-lg hover:brightness-110 active:scale-95;
-}
-
-.hover-link {
-  @apply transition-colors duration-300 hover:text-mint;
-}
-
-/* Dark Mode Specific Styles */
-.dark {
-  .glass-nav {
-    @apply bg-forest/80 border-white/10;
-  }
-  
-  .hover-card {
-    @apply hover:bg-forest-light/50;
-  }
-  
-  .hover-button {
-    @apply hover:bg-mint/20;
-  }
-}
-
-/* Light Mode Specific Styles */
-:root {
-  .glass-nav {
-    @apply bg-forest/80 border-white/10;
-  }
-  
-  .hover-card {
-    @apply hover:bg-forest-light/50;
-  }
-  
-  .hover-button {
-    @apply hover:bg-mint/10;
-  }
-}
-
-/* Preserve original colors */
 .glass-nav {
   background: rgba(10, 31, 47, 0.8);
   backdrop-filter: blur(20px);
